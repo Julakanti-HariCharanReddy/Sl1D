@@ -69,6 +69,8 @@ To stop the playground, press **Ctrl+C** in the terminal.
   uvx --torch-backend cpu --from git+https://github.com/AI-Yatra/s1ced-playground s1ced-playground --examples my_cases.json
   ```
 
+- This repo ships a ready-made scenario file, [examples/github-issue-deduplicator.json](examples/github-issue-deduplicator.json): it asks whether a new GitHub issue duplicates a prior one, how bad a wrong merge would be, and whether both describe the same root symptom, then suggests a merge or a manual review. Load it with `--examples examples/github-issue-deduplicator.json`.
+
 ## Know its limits
 
 On cases like its training data the model picks the right answer 83% of the time, and when it says it is confident it is right 96% of the time. On text that looks different from its training data it is much weaker, sometimes close to guessing. On the realistic examples in this playground it gets 16 of 38 answers right.
