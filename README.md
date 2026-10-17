@@ -71,6 +71,21 @@ To stop the playground, press **Ctrl+C** in the terminal.
 
 - This repo ships a ready-made scenario file, [examples/github-issue-deduplicator.json](examples/github-issue-deduplicator.json): it asks whether a new GitHub issue duplicates a prior one, how bad a wrong merge would be, and whether both describe the same root symptom, then suggests a merge or a manual review. Load it with `--examples examples/github-issue-deduplicator.json`.
 
+## GitHub issue deduplicator
+
+[examples/issue_dedup.py](examples/issue_dedup.py) turns that scenario into a tool you can call from code or the command line. It sends a pair of issues to the decision API and answers **Suggest merge** or **Manual review**. It only suggests a merge when every signal agrees: the verdict is "likely duplicate", the same-root-symptom probability is at least 0.7, a wrong merge would not be high impact, and the model does not flag its answer for review. Otherwise it lists why a human should look. It needs only Python, no extra packages.
+
+With the playground running (or `s1ced --serve`):
+
+```bash
+python examples/issue_dedup.py --new "Export CSV hangs for 30 seconds in Safari" --prior "Safari CSV export never finishes"
+python examples/issue_dedup.py --check                      # run the scenario's cases against their expected answers
+python examples/issue_dedup.py --new ... --prior ... --json --model jev-latest
+python examples/issue_dedup.py --new ... --prior ... --request-only   # print the request, call nothing
+```
+
+From Python: `issue_dedup.recommend(issue_dedup.decide(issue_dedup.build_request(new, prior)))`. Tests: `python -m unittest tests.test_issue_dedup` (no model needed).
+
 ## Know its limits
 
 On cases like its training data the model picks the right answer 83% of the time, and when it says it is confident it is right 96% of the time. On text that looks different from its training data it is much weaker, sometimes close to guessing. On the realistic examples in this playground it gets 16 of 38 answers right.
