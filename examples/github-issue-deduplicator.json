@@ -1,0 +1,48 @@
+{
+  "groups": [
+    {
+      "name": "GitHub issue deduplicator",
+      "note": "Use case by Jagadeesh (Developer agents and tools). First case is from the use-case sheet; second case is a contrasting example written for testing.",
+      "questions": {
+        "verdict": {
+          "type": "choice",
+          "instructions": "Compare the new issue with the prior issue. Which option best describes this case?",
+          "criteria": {
+            "duplicate": "Likely duplicate",
+            "related": "Related but distinct",
+            "new": "New issue",
+            "insufficient": "Not enough evidence"
+          }
+        },
+        "wrong_merge_impact": {
+          "type": "score",
+          "instructions": "Rate the impact if the reports are merged incorrectly in the supplied state.",
+          "criteria": ["none or negligible", "low", "moderate", "high", "critical"]
+        },
+        "same_root_symptom": {
+          "type": "noul",
+          "instructions": "Do the two descriptions describe the same root symptom?",
+          "criteria": {
+            "true": "Both reports describe the same failure in the same feature and environment",
+            "false": "The reports differ in feature, environment or failure"
+          }
+        }
+      },
+      "gates": {
+        "same_root_symptom": {"threshold": 0.7, "pass": "Suggest merge", "fail": "Manual review"}
+      },
+      "items": [
+        {
+          "name": "Safari CSV export hang",
+          "state": "New issue: Export CSV hangs for 30 seconds in Safari.\nPrior issue: Safari CSV export never finishes.",
+          "expected": {"verdict": "duplicate", "wrong_merge_impact": [0, 1], "same_root_symptom": "yes"}
+        },
+        {
+          "name": "Chrome PDF export vs Safari CSV export",
+          "state": "New issue: PDF export in Chrome downloads a blank file.\nPrior issue: Safari CSV export never finishes.",
+          "expected": {"verdict": "new", "wrong_merge_impact": [2, 3], "same_root_symptom": "no"}
+        }
+      ]
+    }
+  ]
+}
